@@ -2,6 +2,7 @@ package com.example.simpleparadox.listycity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -37,41 +38,33 @@ public class MainActivity extends AppCompatActivity {
         cityList = findViewById(R.id.city_list);
 
         //String []cities ={"Edmonton", "Vancouver", "Moscow", "Sydney", "Berlin", "Vienna", "Tokyo", "Beijing", "Osaka", "New Delhi"};
-
-        dataList = new ArrayList<>();
+        Intent it = getIntent();
+        if(!it.hasExtra("cityList")) {
+            dataList = new ArrayList<>();
+        }
+        else {
+            //
+            dataList = it.getStringArrayListExtra("cityList");
+        }
 
         //dataList.addAll(Arrays.asList(cities));
-
         cityAdapter = new ArrayAdapter<>(this, R.layout.content, dataList);
 
 
         cityList.setAdapter(cityAdapter);
 
+        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String value = (String)parent.getItemAtPosition(position);
+                Intent intent = new Intent(MainActivity.this, ShowActivity.class);
+                intent.putExtra("cityName", value);
+                intent.putExtra("cityList", dataList);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+
         final Button addButton = findViewById(R.id.button_add);
         addButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                nameField.setVisibility(View.VISIBLE);
-            }
-        });
-
-        final Button confirmButton = findViewById(R.id.button_confirm);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String cityName = newName.getText().toString();
-                cityAdapter.add(cityName);
-                newName.getText().clear();
-                nameField.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        final Button deleteButton = findViewById(R.id.button_clear);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                cityAdapter.clear();
-            }
-        });
-
-    }
-
-
-}
+  
