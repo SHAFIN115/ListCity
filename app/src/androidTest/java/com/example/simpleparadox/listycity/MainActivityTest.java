@@ -99,4 +99,27 @@ public class MainActivityTest{
     public void tearDown() throws Exception{
         solo.finishOpenedActivities();
     }
+    @Test
+    public void IntentTest(){
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+
+        solo.clickOnButton("ADD CITY"); //Click ADD CITY Button
+
+        //Get view for EditText and enter a city name
+        solo.enterText((EditText) solo.getView(R.id.editText_name), "Intent_Testing_Assignment");
+        solo.clickOnButton("CONFIRM"); //Select CONFIRM Button
+        solo.clearEditText((EditText) solo.getView(R.id.editText_name)); //Clear the EditText
+
+        /* True if there is any text: Edmonton on the screen, wait at least 2 seconds and
+        find minimum one match. */
+        assertTrue(solo.waitForText("Intent_Testing_Assignment", 1, 2000));
+
+        solo.clickLongInList(1);
+        solo.assertCurrentActivity("Wrong Activity", showActivity.class);
+        solo.waitForText("Intent_Testing_Assignment", 1, 2000);
+        solo.clickOnButton("Back");
+        assertTrue(solo.waitForText("ADD CITY", 1, 2000));
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+    }
+
 }
